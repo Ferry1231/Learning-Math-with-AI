@@ -1,0 +1,247 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[margin=0.88in,top=0.92in,bottom=0.88in]{geometry}
+\usepackage{microtype}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\definecolor{ink}{HTML}{17293E}
+\definecolor{accent}{HTML}{275D8C}
+\definecolor{muted}{HTML}{536477}
+\color{ink}
+\titleformat{\section}{\large\bfseries\color{accent}}{\thesection.}{0.55em}{}
+\titleformat{\subsection}{\normalsize\bfseries\color{ink}}{\thesubsection}{0.55em}{}
+\titlespacing*{\section}{0pt}{1.10em}{0.35em}
+\titlespacing*{\subsection}{0pt}{0.75em}{0.22em}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist[itemize]{leftmargin=1.35em,topsep=2pt,itemsep=1pt,parsep=0pt}
+\setlist[enumerate]{leftmargin=1.5em,topsep=2pt,itemsep=1pt,parsep=0pt}
+\setlength{\abovedisplayskip}{7pt}
+\setlength{\belowdisplayskip}{7pt}
+\setlength{\abovedisplayshortskip}{4pt}
+\setlength{\belowdisplayshortskip}{4pt}
+\setlength{\headheight}{20pt}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\footnotesize\color{muted} STAGE 1 \quad / \quad MODULE 2}
+\fancyhead[R]{\footnotesize\color{muted} REAL ANALYSIS BASICS}
+\fancyfoot[C]{\footnotesize\color{muted}\thepage}
+\renewcommand{\headrulewidth}{0.3pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{muted!35}\leaders\hrule height \headrulewidth\hfill}}
+\newcommand{\N}{\mathbb N}
+\newcommand{\R}{\mathbb R}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\cl}[1]{\overline{#1}}
+\newcommand{\key}[1]{\par\smallskip\textcolor{accent}{\textbf{Key point.}}\ #1\par}
+
+\begin{document}
+\begin{center}
+  {\LARGE\bfseries Module 2: Metric Spaces and Function Convergence}\par
+  \vspace{5pt}
+  {\small\color{muted}Topology, completeness, compactness, continuity, and convergence of functions}\par
+  \vspace{7pt}
+  {\color{accent}\rule{0.88\linewidth}{0.7pt}}
+\end{center}
+\vspace{-4pt}
+
+\section{Metric Spaces}
+A \emph{metric} abstracts the notion of distance without requiring an order or vector-space structure. A \emph{metric space} is a pair $(X,d)$, where $X$ is a set and $d:X\times X\to[0,\infty)$ satisfies, for every $x,y,z\in X$:
+\begin{enumerate}[label=(\roman*)]
+\item \textbf{Definiteness:} $d(x,y)=0\iff x=y$ (and $d(x,y)\ge 0$).
+\item \textbf{Symmetry:} $d(x,y)=d(y,x)$.
+\item \textbf{Triangle inequality:} $d(x,z)\le d(x,y)+d(y,z)$.
+\end{enumerate}
+Examples include $d(x,y)=|x-y|$ on $\R$, Euclidean distance $\|x-y\|_2$ on $\R^m$, and the \emph{discrete metric} $d(x,y)=\mathbf1_{\{x\ne y\}}$ on any set. The same underlying set can carry different metrics, hence different notions of closeness.
+
+\key{A metric is additional \emph{structure} on a set. Convergence, continuity, and completeness are then defined using this structure.}
+
+\section{Topological Foundations}
+\subsection{Open balls, open and closed sets}
+For $x\in X$ and $r>0$, the \emph{open ball} is
+\[
+B_r(x)=\{y\in X:d(x,y)<r\}.
+\]
+A subset $U\subseteq X$ is \emph{open} if $\forall x\in U\,\exists r>0$ such that $B_r(x)\subseteq U$. A set $F\subseteq X$ is \emph{closed} if $X\setminus F$ is open. A \emph{neighborhood} of $x$ is any set containing an open ball about $x$.
+
+\subsection{Topology and its three axioms}
+A \emph{topology} on $X$ is a collection $\mathcal T\subseteq\mathcal P(X)$ whose members are called open sets and which satisfies
+\[
+\boxed{\begin{aligned}
+&\varnothing,X\in\mathcal T,\\
+&\bigcup_{i\in I}U_i\in\mathcal T\quad\text{for every family }(U_i)_{i\in I}\subseteq\mathcal T,\\
+&U_1\cap\cdots\cap U_k\in\mathcal T\quad\text{for every finite family in }\mathcal T.
+\end{aligned}}
+\]
+The pair $(X,\mathcal T)$ is a \emph{topological space}. Every metric $d$ induces a topology $\mathcal T_d$ via its open balls, but topology records which sets are open rather than exact numerical distances. Not every topology comes from a metric.
+
+\subsection{Interior, closure, and limit points}
+For $A\subseteq X$,
+\[
+\operatorname{int}(A)=\bigcup\{U\subseteq A:U\text{ open}\},\qquad
+\cl A=\bigcap\{F\supseteq A:F\text{ closed}\}.
+\]
+Thus $\operatorname{int}(A)$ is the \emph{largest open subset} of $A$, while $\cl A$ is the \emph{smallest closed superset}. In a metric space,
+\[
+\boxed{\begin{aligned}
+x\in\operatorname{int}(A)&\iff \exists r>0:\ B_r(x)\subseteq A,\\
+x\in\cl A&\iff \forall r>0:\ B_r(x)\cap A\ne\varnothing.
+\end{aligned}}
+\]
+A \emph{limit point} (accumulation point) of $A$ is a point $x$ such that every $B_r(x)$ contains some point of $A$ \emph{other than $x$}:
+\[
+x\in A'\iff \forall r>0:\ (B_r(x)\setminus\{x\})\cap A\ne\varnothing.
+\]
+In metric spaces, $\cl A=A\cup A'$; a set is closed iff it contains all its limit points. Also,
+\[
+x\in\cl A\iff\exists (a_n)\subseteq A:\ a_n\to x.
+\]
+For example, $A=\{1/n:n\ge1\}\subset\R$ has $A'=\{0\}$ and $\cl A=A\cup\{0\}$.
+
+\section{Convergence and Completeness}
+\textbf{Convergence.} In $(X,d)$, a sequence $(x_n)$ converges to $x\in X$ if
+\[
+\boxed{\forall\eps>0\ \exists N\ \forall n\ge N:\ d(x_n,x)<\eps.}
+\]
+The metric axioms imply uniqueness of limits: if $x_n\to x$ and $x_n\to y$, then $d(x,y)\le d(x,x_n)+d(x_n,y)\to0$, so $x=y$.
+
+\textbf{Cauchy sequences.} A sequence is \emph{Cauchy} if its sufficiently late terms are uniformly close to one another:
+\[
+\boxed{\forall\eps>0\ \exists N\ \forall m,n\ge N:\ d(x_m,x_n)<\eps.}
+\]
+Every convergent sequence is Cauchy, by the triangle inequality. The converse depends on the space.
+
+\textbf{Completeness.} The metric space $(X,d)$ is \emph{complete} if
+\[
+\boxed{(x_n)\text{ Cauchy in }X\ \Longrightarrow\ \exists x\in X:\ x_n\to x.}
+\]
+For instance, $\R^m$ is complete with Euclidean distance, while $\Q$ with $|\cdot|$ is not: rational approximations to $\sqrt2$ are Cauchy but have no limit in $\Q$. Every closed subspace of a complete metric space is complete, and every complete subspace is closed in the ambient metric space.
+
+\key{Completeness means no \emph{missing Cauchy limits}; it does not imply that arbitrary sequences converge or even have convergent subsequences.}
+
+\section{Compactness}
+\subsection{Open covers and compact sets}
+An \emph{open cover} of $K\subseteq X$ is a family of open sets $(U_i)_{i\in I}$ with $K\subseteq\bigcup_{i\in I}U_i$. The set $K$ is \emph{compact} if every open cover admits a \emph{finite subcover}:
+\[
+\boxed{K\subseteq\bigcup_{i\in I}U_i\ \Longrightarrow\
+\exists i_1,\ldots,i_k:\ K\subseteq\bigcup_{j=1}^kU_{i_j}.}
+\]
+Equivalently, every family of closed subsets of $K$ with the \emph{finite intersection property} has nonempty total intersection. This expresses a global finiteness principle rather than a numerical bound on diameter.
+
+\subsection{Heine--Borel and sequential compactness}
+\textbf{Heine--Borel theorem.} For the usual Euclidean metric on $\R^m$,
+\[
+\boxed{K\subseteq\R^m:\quad K\text{ compact}\iff K\text{ closed and bounded}.}
+\]
+This equivalence is special to finite-dimensional Euclidean spaces; it is false for general metric spaces.
+
+\textbf{Sequential compactness.} For a metric space, compactness is equivalent to
+\[
+\boxed{\text{Every sequence }(x_n)\subseteq K\text{ has a subsequence }x_{n_k}\to x\in K.}
+\]
+One proof direction illustrates the role of compactness. Given $(x_n)\subseteq K$, let
+\[
+F_N=\overline{\{x_n:n\ge N\}}^{\,K},\qquad F_1\supseteq F_2\supseteq\cdots.
+\]
+These are nonempty closed subsets of compact $K$. Every finite intersection is nonempty; compactness gives $x\in\bigcap_NF_N$. Hence, for every $N$ and $r>0$, some $n\ge N$ satisfies $d(x_n,x)<r$. Recursively choose $n_k>n_{k-1}$ with $d(x_{n_k},x)<1/k$; then $x_{n_k}\to x$.
+
+\subsection{Compactness, completeness, and total boundedness}
+A metric space is \emph{totally bounded} if, for every $\eps>0$, finitely many radius-$\eps$ balls cover it:
+\[
+\forall\eps>0\ \exists x_1,\ldots,x_k\in X:\quad X=\bigcup_{j=1}^k B_\eps(x_j).
+\]
+For metric spaces, the precise structural characterization is
+\[
+\boxed{\text{Compact}\iff\text{Complete and totally bounded}.}
+\]
+Compactness implies completeness because a Cauchy sequence with a convergent subsequence must itself converge. It also implies total boundedness by taking a finite subcover of the $\eps$-ball cover. Conversely, total boundedness allows extraction of a Cauchy subsequence; completeness supplies its limit.
+
+\emph{Counterexample to ``closed and bounded implies compact.''} An infinite set with the discrete metric is complete and bounded ($d\le1$), but not totally bounded: for $0<\eps<1$, each ball is a singleton, so finitely many balls cannot cover it.
+
+\key{Completeness prevents missing limits; total boundedness prevents infinitely many mutually separated points at a fixed scale. Together they yield compactness.}
+
+\section{Compactness and Continuity}
+\subsection{Continuity and compact images}
+For $f:(X,d_X)\to(Y,d_Y)$, continuity at $x\in X$ means
+\[
+\forall\eps>0\ \exists\delta>0:\ d_X(x,y)<\delta\Rightarrow d_Y(f(x),f(y))<\eps.
+\]
+Equivalently, \emph{topological continuity} requires the inverse image of every open set in $Y$ to be open in $X$:
+\[
+\boxed{f\text{ continuous}\iff V\text{ open in }Y\Rightarrow f^{-1}(V)\text{ open in }X.}
+\]
+The key global consequence is that \emph{continuous images of compact sets are compact}. Indeed, pull an open cover of $f(K)$ back along $f$, take a finite subcover of $K$, then push the covering statement forward to $f(K)$.
+
+\subsection{Extreme Value Theorem}
+If $K\ne\varnothing$ is compact and $f:K\to\R$ is continuous, then $f(K)$ is compact in $\R$, hence closed and bounded. Consequently,
+\[
+\boxed{\exists x_{\min},x_{\max}\in K:\quad
+f(x_{\min})=\min_{x\in K}f(x),\qquad
+f(x_{\max})=\max_{x\in K}f(x).}
+\]
+Compactness guarantees not only finite bounds but also \emph{attainment} of both extrema.
+
+\subsection{Uniform continuity and Heine--Cantor}
+Ordinary continuity allows $\delta$ to depend on the base point $x$. \emph{Uniform continuity} requires one $\delta$ to work across all points:
+\[
+\boxed{\forall\eps>0\ \exists\delta>0\ \forall x,y\in X:\
+d_X(x,y)<\delta\Rightarrow d_Y(f(x),f(y))<\eps.}
+\]
+\textbf{Heine--Cantor theorem.} Every continuous map from a compact metric space to a metric space is uniformly continuous. \emph{Proof idea:} if uniform continuity fails, choose $x_n,y_n\in K$ with $d(x_n,y_n)<1/n$ but $d_Y(f(x_n),f(y_n))\ge\eps_0$. Compactness gives $x_{n_k}\to x$; then $y_{n_k}\to x$, contradicting continuity at $x$.
+
+\section{Convergence of Function Sequences}
+\subsection{Pointwise versus uniform convergence}
+Let $f_n:X\to\R$. \emph{Pointwise convergence} to $f$ means
+\[
+\forall x\in X\ \forall\eps>0\ \exists N=N(x,\eps)\ \forall n\ge N:\ |f_n(x)-f(x)|<\eps.
+\]
+\emph{Uniform convergence} requires $N$ to be independent of $x$:
+\[
+\boxed{\forall\eps>0\ \exists N=N(\eps)\ \forall n\ge N\ \forall x\in X:\ |f_n(x)-f(x)|<\eps.}
+\]
+Uniform convergence implies pointwise convergence, but not conversely. For $f_n(x)=x^n$ on $[0,1]$, the pointwise limit is $f(x)=0$ for $x<1$ and $f(1)=1$. Yet
+\[
+\sup_{x\in[0,1]}|f_n(x)-f(x)|=1\quad\text{for every }n,
+\]
+so convergence is not uniform; continuous functions can have a discontinuous pointwise limit.
+
+\subsection{Uniform convergence as metric convergence}
+Let $B(X)$ be the space of bounded real-valued functions on $X$, with the \emph{supremum metric}
+\[
+d_\infty(f,g)=\|f-g\|_\infty:=\sup_{x\in X}|f(x)-g(x)|.
+\]
+Then
+\[
+\boxed{f_n\xrightarrow{\mathrm{uniform}}f\iff d_\infty(f_n,f)\to0.}
+\]
+Thus uniform convergence is ordinary convergence in an appropriate \emph{function metric space}. The space $(B(X),d_\infty)$ is complete; in particular, $C([a,b])$ is complete under $\|\cdot\|_\infty$ since uniform limits of continuous functions remain continuous.
+
+\subsection{Interchanging limits with continuity and integration}
+\textbf{Uniform Limit Theorem.} If every $f_n$ is continuous and $f_n\to f$ uniformly, then $f$ is continuous. The proof uses
+\[
+|f(x)-f(x_0)|\le |f(x)-f_n(x)|+|f_n(x)-f_n(x_0)|+|f_n(x_0)-f(x_0)|.
+\]
+Uniform convergence controls the first and third terms with a \emph{single fixed $n$}, while continuity of $f_n$ controls the middle term.
+
+\textbf{Interchanging limit and integral.} For continuous $f_n:[a,b]\to\R$ with uniform limit $f$,
+\[
+\boxed{\left|\int_a^b f_n-\int_a^b f\right|
+\le(b-a)\|f_n-f\|_\infty\to0,\qquad
+\lim_n\int_a^b f_n=\int_a^b\lim_n f_n.}
+\]
+Pointwise convergence alone is insufficient. The continuous spikes
+\[
+f_n(x)=\begin{cases}6n^2x(1-nx),&0\le x\le1/n,\\0,&1/n<x\le1,\end{cases}
+\]
+satisfy $f_n(x)\to0$ for every $x\in[0,1]$, while $\int_0^1f_n(x)\,dx=1$ for every $n$. Uniform convergence is \emph{sufficient, not necessary}: $x^n\to\mathbf1_{\{1\}}$ pointwise on $[0,1]$ and its integrals still tend to $0$.
+
+\key{The mode of convergence determines which operations survive taking limits. Later, measure-theoretic convergence theorems replace uniform convergence by other useful hypotheses.}
+
+\end{document}

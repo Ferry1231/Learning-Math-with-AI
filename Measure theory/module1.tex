@@ -1,0 +1,232 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[margin=0.88in,top=0.92in,bottom=0.88in]{geometry}
+\usepackage{microtype}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\definecolor{ink}{HTML}{17293E}
+\definecolor{accent}{HTML}{275D8C}
+\definecolor{muted}{HTML}{536477}
+\color{ink}
+\titleformat{\section}{\large\bfseries\color{accent}}{\thesection.}{0.55em}{}
+\titleformat{\subsection}{\normalsize\bfseries\color{ink}}{\thesubsection}{0.55em}{}
+\titlespacing*{\section}{0pt}{1.10em}{0.35em}
+\titlespacing*{\subsection}{0pt}{0.75em}{0.22em}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist[itemize]{leftmargin=1.35em,topsep=2pt,itemsep=1pt,parsep=0pt}
+\setlist[enumerate]{leftmargin=1.5em,topsep=2pt,itemsep=1pt,parsep=0pt}
+\setlength{\abovedisplayskip}{7pt}
+\setlength{\belowdisplayskip}{7pt}
+\setlength{\abovedisplayshortskip}{4pt}
+\setlength{\belowdisplayshortskip}{4pt}
+\setlength{\headheight}{20pt}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\footnotesize\color{muted} STAGE 1 \quad / \quad MODULE 1}
+\fancyhead[R]{\footnotesize\color{muted} REAL ANALYSIS BASICS}
+\fancyfoot[C]{\footnotesize\color{muted}\thepage}
+\renewcommand{\headrulewidth}{0.3pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{muted!35}\leaders\hrule height \headrulewidth\hfill}}
+\newcommand{\N}{\mathbb N}
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\R}{\mathbb R}
+\newcommand{\Rbar}{\overline{\mathbb R}}
+\newcommand{\PO}{\mathcal P(\Omega)}
+\newcommand{\ind}[1]{\mathbf 1_{#1}}
+\newcommand{\io}{\text{ i.o.}}
+\newcommand{\key}[1]{\par\smallskip\textcolor{accent}{\textbf{Key point.}}\ #1\par}
+
+\begin{document}
+\begin{center}
+  {\LARGE\bfseries Module 1: Foundations and Limit Superior/Inferior}\par
+  \vspace{5pt}
+  {\small\color{muted}Proof language, sets, countability, sequences, and indicator functions}\par
+  \vspace{7pt}
+  {\color{accent}\rule{0.88\linewidth}{0.7pt}}
+\end{center}
+\vspace{-4pt}
+
+\section{Mathematical Statements and Proof Language}
+\textbf{Quantifiers.} The symbols $\forall$ (for all) and $\exists$ (there exists) specify the logical scope of a statement. Their order matters:
+\[
+\forall x\in\R\,\exists y\in\R:\ y>x \quad\text{is true},
+\qquad
+\exists y\in\R\,\forall x\in\R:\ y>x \quad\text{is false}.
+\]
+\textbf{Implications.} $P\Rightarrow Q$ means that $P$ is \emph{sufficient} for $Q$, while $Q$ is \emph{necessary} for $P$; $P\Leftrightarrow Q$ means both directions hold.
+
+\textbf{Negation of quantified statements.} Quantifiers switch under negation:
+\[
+\neg(\forall x\,P(x))\iff\exists x\,\neg P(x),\qquad
+\neg(\exists x\,P(x))\iff\forall x\,\neg P(x).
+\]
+In particular, the distinction between ``eventually'' and ``arbitrarily far along'' is encoded by
+\[
+\underbrace{\exists N\,\forall n\ge N:\ P(n)}_{\text{eventually always}}
+\qquad\text{versus}\qquad
+\underbrace{\forall N\,\exists n\ge N:\ P(n)}_{\text{infinitely often}}.
+\]
+Common proof strategies include direct proof, contrapositive ($P\Rightarrow Q\iff\neg Q\Rightarrow\neg P$), contradiction, and induction.
+
+\section{Sets, Images, and Inverse Images}
+For $A,B\subseteq\Omega$, union and intersection correspond to logical OR and AND:
+\[
+A\cup B=\{x:x\in A\text{ or }x\in B\},\qquad
+A\cap B=\{x:x\in A\text{ and }x\in B\}.
+\]
+The complement is $A^c=\Omega\setminus A$, the difference is $A\setminus B=A\cap B^c$, and the Cartesian product is $A\times B=\{(a,b):a\in A,b\in B\}$. De Morgan's laws extend to any indexed family:
+\[
+\left(\bigcup_i A_i\right)^c=\bigcap_i A_i^c,
+\qquad
+\left(\bigcap_i A_i\right)^c=\bigcup_i A_i^c.
+\]
+For a map $f:X\to Y$, define the \emph{direct image} and \emph{inverse image} by
+\[
+f[A]=\{f(x):x\in A\}\quad (A\subseteq X),
+\qquad
+f^{-1}[B]=\{x\in X:f(x)\in B\}\quad (B\subseteq Y).
+\]
+The preimage $f^{-1}[B]$ exists even if $f$ has no inverse function. Crucially, preimages preserve \emph{all} unions, intersections, and complements:
+\[
+\boxed{\begin{aligned}
+f^{-1}\!\left[\bigcup_i B_i\right]&=\bigcup_i f^{-1}[B_i],\\
+f^{-1}\!\left[\bigcap_i B_i\right]&=\bigcap_i f^{-1}[B_i],\\
+f^{-1}[Y\setminus B]&=X\setminus f^{-1}[B].
+\end{aligned}}
+\]
+Direct images preserve unions, but generally not intersections or complements. For example, if $f(1)=f(2)=0$, then $f[\{1\}\cap\{2\}]=\varnothing$ whereas $f[\{1\}]\cap f[\{2\}]=\{0\}$.
+
+\key{Inverse images respect the logical structure of subsets. This is why they are fundamental in the definitions of continuity and measurability.}
+
+\section{Countability}
+A set is \emph{countably infinite} if it admits a bijection with $\N$; \emph{countable} means finite or countably infinite. Use $\N=\{1,2,3,\ldots\}$ below.
+
+\textbf{$\Z$ is countable.} One enumeration is
+\[
+0,1,-1,2,-2,3,-3,\ldots,
+\]
+which lists every integer exactly once, hence defines a bijection $\N\leftrightarrow\Z$.
+
+\textbf{$\Q$ is countable.} Every rational number has a representation $p/q$ with $p\in\Z$ and $q\in\N$. The pairs $(p,q)$ can be enumerated, for example, by increasing $|p|+q$ (only finitely many pairs occur at each level). Enumerate the corresponding fractions and skip repetitions; every rational eventually appears. Since $\Q$ is infinite, this gives a bijection $\N\leftrightarrow\Q$.
+
+\textbf{$\R$ is uncountable (Cantor diagonal argument).} It suffices to show that $(0,1)$ cannot be enumerated. Suppose, toward a contradiction, that
+\[
+(0,1)=\{x_1,x_2,\ldots\},\qquad x_n=0.a_{n1}a_{n2}a_{n3}\ldots
+\]
+where each decimal uses the expansion not ending in an infinite string of $9$'s. Construct $y=0.b_1b_2\ldots$ by
+\[
+b_n=\begin{cases}1,&a_{nn}\ne1,\\2,&a_{nn}=1.\end{cases}
+\]
+Then $y\in(0,1)$ and its $n$th digit differs from that of $x_n$, so $y\ne x_n$ for every $n$. This contradicts the assumed complete enumeration.
+
+\key{For $\Z$ and $\Q$, \emph{one} bijection proves countability. For $(0,1)$, diagonalization defeats \emph{every} proposed enumeration.}
+
+\section{Sequences and Their Limit Superior/Inferior}
+\subsection{Convergence and bounds (brief review)}
+A real sequence converges to $L$ if $\forall\varepsilon>0\,\exists N\,\forall n\ge N$, $|x_n-L|<\varepsilon$. For a nonempty bounded set $S\subseteq\R$, $\sup S$ is its least upper bound and $\inf S$ its greatest lower bound; neither need belong to $S$. The least-upper-bound property of $\R$ is a formulation of completeness.
+
+\subsection{Numerical sequences}
+For $(x_n)\subseteq\R$, define the upper and lower bounds of the $N$th tail by
+\[
+s_N=\sup_{n\ge N}x_n,\qquad t_N=\inf_{n\ge N}x_n.
+\]
+Deleting initial terms can only decrease $s_N$ and increase $t_N$:
+\[
+s_{N+1}\le s_N,\qquad t_{N+1}\ge t_N.
+\]
+Thus both auxiliary sequences have limits in the \emph{extended reals} $\Rbar=\R\cup\{-\infty,+\infty\}$, and we define
+\[
+\boxed{\begin{aligned}
+\limsup_{n\to\infty}x_n&=\lim_{N\to\infty}s_N=\inf_N\sup_{n\ge N}x_n,\\
+\liminf_{n\to\infty}x_n&=\lim_{N\to\infty}t_N=\sup_N\inf_{n\ge N}x_n.
+\end{aligned}}
+\]
+The outer $\inf$ and $\sup$ arise because the tail upper bounds decrease and the tail lower bounds increase. They are \emph{asymptotic} bounds, not necessarily the bounds of the whole sequence.
+
+For a bounded sequence, $\limsup x_n$ and $\liminf x_n$ are respectively the largest and smallest \emph{subsequential limits}. The limit values need not be attained by any term. In addition,
+\[
+\liminf x_n\le\limsup x_n,\qquad
+x_n\to L\in\R\iff\liminf x_n=\limsup x_n=L.
+\]
+For instance, $x_n=(-1)^n+1/n$ satisfies $\limsup x_n=1$ and $\liminf x_n=-1$; an isolated first term of $100$ would not affect either limit. An unbounded sequence may have an infinite upper or lower limit (e.g., $x_n=(-1)^n n$).
+
+\subsection{Sequences of sets}
+Let $A_n\subseteq\Omega$. In the inclusion order on $\PO$, the supremum of a family is its union and the infimum is its intersection. Define the tail upper and lower bounds
+\[
+B_N=\sup_{n\ge N}A_n=\bigcup_{n\ge N}A_n,\qquad
+C_N=\inf_{n\ge N}A_n=\bigcap_{n\ge N}A_n.
+\]
+As $N$ increases, $B_N$ decreases under inclusion while $C_N$ increases. Consequently,
+\[
+\boxed{\begin{aligned}
+\limsup_{n\to\infty}A_n&=\inf_N B_N=\bigcap_{N=1}^{\infty}\bigcup_{n\ge N}A_n,\\
+\liminf_{n\to\infty}A_n&=\sup_N C_N=\bigcup_{N=1}^{\infty}\bigcap_{n\ge N}A_n.
+\end{aligned}}
+\]
+Equivalently, expanding the membership quantifiers,
+\[
+\begin{aligned}
+x\in\limsup A_n&\iff \forall N\,\exists n\ge N:\ x\in A_n
+&&\text{(infinitely often)},\\
+x\in\liminf A_n&\iff \exists N\,\forall n\ge N:\ x\in A_n
+&&\text{(eventually always)}.
+\end{aligned}
+\]
+These descriptions are \emph{consequences} of the order-theoretic definitions: the outer operation combines all tails, not just one fixed tail.
+
+\section{The Order-Theoretic Bridge: Indicator Functions}
+The power set $(\PO,\subseteq)$ is a \emph{complete lattice}: every family of subsets has a supremum (union) and an infimum (intersection). It is therefore meaningful to use the same tail sup/inf construction for numbers and sets.
+
+For $A\subseteq\Omega$, its \emph{indicator function} is
+\[
+\ind A(x)=\begin{cases}1,&x\in A,\\0,&x\notin A.\end{cases}
+\qquad\text{Thus}\qquad
+A=\{x:\ind A(x)=1\}.
+\]
+It translates set membership into a numerical value, without losing information. In fact $A\mapsto\ind A$ is an \emph{order isomorphism} from $(\PO,\subseteq)$ to the $\{0,1\}$-valued functions on $\Omega$ with pointwise order:
+\[
+\begin{gathered}
+A\subseteq B\iff\ind A\le\ind B,\qquad
+\ind{A^c}=1-\ind A,\qquad
+\ind{A\cap B}=\ind A\,\ind B,\\
+\ind{\bigcup_i A_i}(x)=\sup_i\ind{A_i}(x),\qquad
+\ind{\bigcap_i A_i}(x)=\inf_i\ind{A_i}(x).
+\end{gathered}
+\]
+Apply these identities successively to the two layers of the set limit:
+\[
+\begin{aligned}
+\ind{\limsup A_n}(x)
+&=\ind{\bigcap_N\bigcup_{n\ge N}A_n}(x)
+=\inf_N\sup_{n\ge N}\ind{A_n}(x)
+=\limsup_n\ind{A_n}(x),\\
+\ind{\liminf A_n}(x)
+&=\sup_N\inf_{n\ge N}\ind{A_n}(x)
+=\liminf_n\ind{A_n}(x).
+\end{aligned}
+\]
+For a fixed $x$, the sequence $\ind{A_n}(x)$ takes values only in $\{0,1\}$. Its limsup equals $1$ exactly when $x$ appears infinitely often, while its liminf equals $1$ exactly when $x$ eventually appears at every index.
+
+Moreover, $\liminf A_n\subseteq\limsup A_n$: for any $m,N$, choosing $k=\max\{m,N\}$ gives
+\[
+C_m\subseteq A_k\subseteq B_N
+\quad\Longrightarrow\quad
+\sup_m C_m\subseteq\inf_N B_N.
+\]
+Finally, convergence of sets in this sense is exactly pointwise convergence of indicators:
+\[
+\boxed{\liminf A_n=\limsup A_n=A
+\iff\ind{A_n}(x)\to\ind A(x)\quad\forall x\in\Omega.}
+\]
+\key{The indicator map turns a problem about sets into one about numerical functions. Later, measure and probability will use the same bridge: $\mu(A)=\int\ind A\,d\mu$ and $\mathbb P(A)=\mathbb E[\ind A]$.}
+
+\end{document}
