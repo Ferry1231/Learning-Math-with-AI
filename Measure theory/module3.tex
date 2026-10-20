@@ -1,0 +1,273 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[margin=0.88in,top=0.92in,bottom=0.88in]{geometry}
+\usepackage{microtype}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\definecolor{ink}{HTML}{17293E}
+\definecolor{accent}{HTML}{275D8C}
+\definecolor{muted}{HTML}{536477}
+\color{ink}
+\titleformat{\section}{\large\bfseries\color{accent}}{\thesection.}{0.55em}{}
+\titleformat{\subsection}{\normalsize\bfseries\color{ink}}{\thesubsection}{0.55em}{}
+\titlespacing*{\section}{0pt}{1.10em}{0.35em}
+\titlespacing*{\subsection}{0pt}{0.75em}{0.22em}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist[itemize]{leftmargin=1.35em,topsep=2pt,itemsep=1pt,parsep=0pt}
+\setlist[enumerate]{leftmargin=1.5em,topsep=2pt,itemsep=1pt,parsep=0pt}
+\setlength{\abovedisplayskip}{7pt}
+\setlength{\belowdisplayskip}{7pt}
+\setlength{\abovedisplayshortskip}{4pt}
+\setlength{\belowdisplayshortskip}{4pt}
+\setlength{\headheight}{20pt}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\footnotesize\color{muted} STAGE 1 \quad / \quad MODULE 3}
+\fancyhead[R]{\footnotesize\color{muted} MEASURE THEORY}
+\fancyfoot[C]{\footnotesize\color{muted}\thepage}
+\renewcommand{\headrulewidth}{0.3pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{muted!35}\leaders\hrule height \headrulewidth\hfill}}
+\newcommand{\N}{\mathbb N}
+\newcommand{\R}{\mathbb R}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\PO}{\mathcal P(\Omega)}
+\newcommand{\B}{\mathcal B}
+\newcommand{\key}[1]{\par\smallskip\textcolor{accent}{\textbf{Key point.}}\ #1\par}
+
+\begin{document}
+\begin{center}
+  {\LARGE\bfseries Module 3: Sigma-Algebras and Measurable Spaces}\par
+  \vspace{5pt}
+  {\small\color{muted}Measurable structures, generators, Borel sets, and the information viewpoint}\par
+  \vspace{7pt}
+  {\color{accent}\rule{0.88\linewidth}{0.7pt}}
+\end{center}
+\vspace{-4pt}
+
+\section{Sigma-Algebras}
+\subsection{Motivation: which subsets can be measured?}
+A length or probability assignment needs a domain of sets. One might try
+$\mu:\mathcal P(\R)\to[0,\infty]$ with interval lengths
+$\mu([a,b])=b-a$, translation invariance $\mu(A+t)=\mu(A)$,
+and \emph{countable additivity} on pairwise disjoint sets. These natural requirements
+cannot hold simultaneously on \emph{all} subsets of $\R$ (in the usual set-theoretic setting).
+
+\textbf{Vitali counterexample (proof sketch).} On $[0,1]$, write
+$x\sim y\iff x-y\in\Q$, and choose exactly one representative from each
+equivalence class; call the resulting set $V$. This selection uses the axiom of
+choice. For $q\in\Q\cap[-1,1]$, let $V_q=V+q$. By the representative property,
+the sets $V_q$ are pairwise disjoint, and
+\[
+[0,1]\subseteq U:=\bigcup_{q\in\Q\cap[-1,1]}V_q\subseteq[-1,2].
+\]
+Were every subset measurable, translation invariance and countable additivity
+would imply, with $a=\mu(V)$,
+\[
+1\le\mu(U)\le3,\qquad
+\mu(U)=\sum_{q\in\Q\cap[-1,1]}\mu(V_q)=\sum_{q\in\Q\cap[-1,1]}a
+=\begin{cases}0,&a=0,\\+\infty,&a>0.\end{cases}
+\]
+Both possibilities contradict $1\le\mu(U)\le3$. Thus a length-like measure
+must restrict its domain; the Vitali set cannot be Lebesgue measurable.
+The restriction should still allow complements and countable set operations.
+
+\subsection{Definition and elementary properties}
+A \emph{sigma-algebra} on $\Omega$ is a family $\mathcal F\subseteq\PO$ such that
+\[
+\boxed{\begin{aligned}
+&\Omega\in\mathcal F,\\
+&A\in\mathcal F\Longrightarrow A^c\in\mathcal F,\\
+&A_n\in\mathcal F\ (n\ge1)\Longrightarrow\bigcup_{n=1}^{\infty}A_n\in\mathcal F.
+\end{aligned}}
+\]
+Its members are called \emph{measurable sets}. By complements and De Morgan's
+laws, $\varnothing\in\mathcal F$ and $\bigcap_n A_n\in\mathcal F$ whenever
+$A_n\in\mathcal F$; finite unions, intersections, and differences are also measurable.
+Consequently, the $\limsup$ and $\liminf$ of any sequence of measurable sets
+are measurable.
+
+Examples are the \emph{trivial} sigma-algebra $\{\varnothing,\Omega\}$ and the
+\emph{discrete} sigma-algebra $\PO$. For $\Omega=\{1,2,3,4\}$,
+\[
+\mathcal F=\{\varnothing,\{1,2\},\{3,4\},\Omega\}
+\]
+is a nontrivial example: it distinguishes the two blocks but not the individual
+points within either block.
+
+\subsection{Countable, not arbitrary, additivity}
+The \emph{sigma-algebra axioms} govern which unions stay in the domain;
+\emph{countable additivity} is a separate axiom for a measure $\mu$ defined on
+that domain:
+\[
+\boxed{A_i\cap A_j=\varnothing\ (i\ne j)
+\quad\Longrightarrow\quad
+\mu\!\left(\bigcup_{n=1}^{\infty}A_n\right)
+=\sum_{n=1}^{\infty}\mu(A_n).}
+\]
+Arbitrary (possibly uncountable) additivity is \emph{not} required. For instance,
+$[0,1]=\bigcup_{x\in[0,1]}\{x\}$, and each singleton has Lebesgue length zero,
+yet $\lambda([0,1])=1$. Countable additivity permits countable limiting
+operations without asserting an uncountable sum formula. Likewise, requiring
+a sigma-algebra to be closed under \emph{arbitrary} unions would force it to be
+$\mathcal P(\R)$ if all singletons were measurable.
+
+\key{A sigma-algebra specifies an admissible domain for measuring sets; it does not itself assign numerical measures. Closure of the domain and additivity of a measure are different conditions.}
+
+\section{Generated Sigma-Algebras}
+\subsection{Motivation and definition}
+Frequently only a collection $\mathcal C\subseteq\PO$ of basic events is given.
+It need not be a sigma-algebra, so we seek the \emph{smallest} sigma-algebra
+containing these events and all their logically required countable combinations:
+\[
+\boxed{\sigma(\mathcal C)
+:=\text{the smallest sigma-algebra on $\Omega$ containing $\mathcal C$}.}
+\]
+This provides the minimal \emph{family closed under the sigma-algebra
+operations}, not necessarily the entire power set.
+
+\subsection{Why does the smallest one exist?}
+Let $\mathfrak S=\{\mathcal F:\mathcal F\text{ is a sigma-algebra on }\Omega,
+\ \mathcal C\subseteq\mathcal F\}$. It is nonempty because
+$\PO\in\mathfrak S$. Define
+\[
+\boxed{\sigma(\mathcal C)=\bigcap_{\mathcal F\in\mathfrak S}\mathcal F.}
+\]
+An arbitrary intersection of sigma-algebras is again a sigma-algebra:
+$\Omega$ lies in each one, and membership in \emph{all} of them is preserved
+by complements and countable unions. This intersection contains $\mathcal C$
+and lies inside every sigma-algebra containing $\mathcal C$, proving minimality.
+
+For $A\subseteq\Omega$, $\sigma(\{A\})=\{\varnothing,A,A^c,\Omega\}$.
+For $\Omega=\{1,2,3,4\}$, $A=\{1,2\}$ and $B=\{2,3\}$,
+$\sigma(\{A,B\})=\PO$: the intersections and differences isolate all four
+singletons, whose finite unions generate every subset.
+
+\key{Generation is a minimal-closure construction: start with elementary sets and adjoin exactly what the sigma-algebra axioms force.}
+
+\section{Borel Sigma-Algebras}
+\subsection{From topology to measurability}
+A topology $\mathcal T$ contains $\varnothing,X$, is closed under arbitrary
+unions, and under finite intersections. It generally fails to be closed under
+complements: in $\R$, $(0,1)$ is open but its complement is not.
+Thus a topology need not be a sigma-algebra. The natural measurable structure
+associated with a topological space $(X,\mathcal T)$ is
+\[
+\boxed{\B(X):=\sigma(\mathcal T),}
+\]
+the \emph{Borel sigma-algebra}. It is the smallest sigma-algebra containing all
+open sets. In the usual topology of $\R$,
+\[
+\boxed{\mathcal T_{\mathrm{usual}}
+\subsetneq\B(\R)\subsetneq\mathcal P(\R).}
+\]
+The first inclusion is strict because closed non-open sets (e.g. $[0,1]$)
+are Borel; the second is strict because non-Borel subsets exist.
+
+\subsection{Density and rational neighborhoods}
+For a topological space $(X,\mathcal T)$, a subset $D\subseteq X$ is
+\emph{dense} in $X$ if
+\[
+\boxed{\overline D=X\quad\Longleftrightarrow\quad
+D\cap U\ne\varnothing\ \text{for every nonempty open }U\subseteq X.}
+\]
+In particular, $\Q$ is dense in $\R$. To see this, take any $a<b$.
+By the \emph{Archimedean property}, choose $n\in\N$ so that
+$n(b-a)>1$. Setting $k=\lfloor na\rfloor+1$ gives
+\[
+na<k\le na+1<nb,
+\qquad\text{hence}\qquad a<\frac{k}{n}<b.
+\]
+Thus every nonempty open interval contains a rational number. More strongly,
+for any $x\in\R$ and open neighborhood $U$ of $x$, choose
+$a<x<b$ with $(a,b)\subseteq U$. Rational density provides
+$p\in\Q\cap(a,x)$ and $q\in\Q\cap(x,b)$, so
+\[
+\boxed{x\in(p,q)\subseteq U,\qquad p,q\in\Q.}
+\]
+Hence intervals with rational endpoints form a \emph{countable base}
+for the usual topology, motivating the countable Borel generator below.
+
+\subsection{Examples and countable generation}
+All open and closed subsets of $\R$ are Borel. Singletons $\{x\}$ are closed,
+so every countable set is Borel by countable union; in particular
+$\Q$ and, by complementation, $\R\setminus\Q$ are Borel. Intervals such as
+$[a,b)$ are Borel as intersections of suitable closed and open sets.
+
+A remarkably small family generates all Borel sets:
+\[
+\boxed{\B(\R)=\sigma\bigl(\{(p,q):p,q\in\Q,\ p<q\}\bigr).}
+\]
+\emph{Reason.} By the rational-neighborhood property proved above,
+every open $U\subseteq\R$ is a union of rational-endpoint intervals:
+\[
+U=\bigcup_{\substack{p,q\in\Q,\ p<q\\(p,q)\subseteq U}}(p,q).
+\]
+Since $\Q\times\Q$ is countable, this is a \emph{countable} union, so
+$U$ belongs to the generated sigma-algebra. Conversely, every generating
+interval is open and hence Borel.
+
+\key{Borel measurability is generated from topology. Countably many rational intervals already encode every open set in $\R$ through countable unions.}
+
+\section{Measurable Spaces and Information}
+A \emph{measurable space} is a pair
+\[
+\boxed{(\Omega,\mathcal F),\qquad\mathcal F\text{ a sigma-algebra on }\Omega.}
+\]
+No numerical size has yet been assigned. A \emph{measure space} additionally
+specifies $\mu:\mathcal F\to[0,\infty]$ satisfying the measure axioms;
+probability is the special case $\mathbb P(\Omega)=1$.
+
+A sigma-algebra also describes \emph{measurable information}. For example,
+let $\Omega=\{1,2,3,4\}$ and consider
+\[
+\mathcal F=\{\varnothing,\{1,2\},\{3,4\},\Omega\}.
+\]
+This distinguishes which block occurred but cannot distinguish outcomes
+$1$ from $2$.
+If $\mathcal F_1\subseteq\mathcal F_2$, then $\mathcal F_2$ is \emph{finer}:
+it allows at least as many measurable distinctions.
+
+For an observation $X:\Omega\to\R$, define the information it generates by
+\[
+\boxed{\sigma(X):=\{X^{-1}(B):B\in\B(\R)\}.}
+\]
+The inverse-image identities guarantee that this is a sigma-algebra. If
+$X(1)=X(2)=0$ and $X(3)=X(4)=1$, then
+$\sigma(X)=\{\varnothing,\{1,2\},\{3,4\},\Omega\}$.
+This is the prototype for information carried by random variables and filtrations.
+
+\section{Topology, Sigma-Algebras, and Maps}
+Both topologies and sigma-algebras are families of subsets stable under
+specified operations, but their closure requirements differ:
+\begin{itemize}
+\item \textbf{Topology:} arbitrary unions and finite intersections; complements need not be open.
+\item \textbf{Sigma-algebra:} complements and countable unions (hence countable intersections); arbitrary unions need not be measurable.
+\end{itemize}
+They support parallel notions of structure-preserving maps.
+For topological spaces $(X,\mathcal T_X)$, $(Y,\mathcal T_Y)$,
+\[
+\boxed{f:X\to Y\text{ continuous}
+\iff f^{-1}(U)\in\mathcal T_X\quad\forall U\in\mathcal T_Y.}
+\]
+For measurable spaces $(X,\mathcal F)$, $(Y,\mathcal G)$,
+\[
+\boxed{f:X\to Y\text{ measurable}
+\iff f^{-1}(B)\in\mathcal F\quad\forall B\in\mathcal G.}
+\]
+Both definitions use \emph{preimages} because they preserve complements and
+arbitrary unions/intersections. In particular, every continuous map between
+topological spaces is Borel measurable when both spaces carry their Borel
+sigma-algebras: the preimages of target open sets are source open sets, and
+the same conclusion extends to their generated sigma-algebras.
+
+\key{Topology encodes local closeness; a sigma-algebra encodes measurable events. Preimages provide the common language for maps preserving either structure.}
+
+\end{document}
