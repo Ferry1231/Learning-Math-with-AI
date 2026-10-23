@@ -1,0 +1,306 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[margin=0.88in,top=0.92in,bottom=0.88in]{geometry}
+\usepackage{microtype}
+\linespread{0.965}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\definecolor{ink}{HTML}{17293E}
+\definecolor{accent}{HTML}{275D8C}
+\definecolor{muted}{HTML}{536477}
+\color{ink}
+\titleformat{\section}{\large\bfseries\color{accent}}{\thesection.}{0.55em}{}
+\titleformat{\subsection}{\normalsize\bfseries\color{ink}}{\thesubsection}{0.55em}{}
+\titlespacing*{\section}{0pt}{0.78em}{0.22em}
+\titlespacing*{\subsection}{0pt}{0.50em}{0.12em}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1.8pt}
+\setlist[itemize]{leftmargin=1.35em,topsep=2pt,itemsep=1pt,parsep=0pt}
+\setlist[enumerate]{leftmargin=1.5em,topsep=2pt,itemsep=1pt,parsep=0pt}
+\setlength{\abovedisplayskip}{4.3pt}
+\setlength{\belowdisplayskip}{4.3pt}
+\setlength{\abovedisplayshortskip}{3pt}
+\setlength{\belowdisplayshortskip}{3pt}
+\setlength{\headheight}{20pt}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\footnotesize\color{muted} STAGE 1 \quad / \quad MODULE 4}
+\fancyhead[R]{\footnotesize\color{muted} MEASURE THEORY}
+\fancyfoot[C]{\footnotesize\color{muted}\thepage}
+\renewcommand{\headrulewidth}{0.3pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{muted!35}\leaders\hrule height \headrulewidth\hfill}}
+\newcommand{\R}{\mathbb R}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\N}{\mathbb N}
+\newcommand{\B}{\mathcal B}
+\newcommand{\Lcal}{\mathcal L}
+\newcommand{\key}[1]{\par\smallskip\textcolor{accent}{\textbf{Key point.}}\ #1\par}
+
+\begin{document}
+\begin{center}
+  {\LARGE\bfseries Module 4: Lebesgue Measure}\par
+  \vspace{5pt}
+  {\small\color{muted}Measure axioms, continuity, outer measure, Carath\'eodory's criterion, and Lebesgue measurability}\par
+  \vspace{7pt}
+  {\color{accent}\rule{0.88\linewidth}{0.7pt}}
+\end{center}
+\vspace{-4pt}
+
+\section{Measures}
+\subsection{Definition and classical examples}
+On a measurable space $(\Omega,\mathcal F)$, a \emph{measure} is a function
+$\mu:\mathcal F\to[0,\infty]$ satisfying
+\[
+\boxed{\mu(\varnothing)=0,\qquad
+\mu\!\left(\bigsqcup_{n=1}^{\infty}A_n\right)
+=\sum_{n=1}^{\infty}\mu(A_n)\quad(A_n\in\mathcal F).}
+\]
+Here $\bigsqcup$ denotes disjoint union. The triple
+$(\Omega,\mathcal F,\mu)$ is a \emph{measure space}; $+\infty$ is allowed.
+\begin{itemize}
+\item \textbf{Counting measure:} on $(\Omega,\mathcal P(\Omega))$,
+$\mu(A)=|A|$ if $A$ is finite, and $+\infty$ otherwise.
+\item \textbf{Dirac measure:} for $x_0\in\Omega$,
+$\delta_{x_0}(A)=\mathbf1_A(x_0)$ on any $\mathcal F$.
+\item \textbf{Probability measure:} a measure $\mathbb P$ with
+$\mathbb P(\Omega)=1$.
+\end{itemize}
+
+\subsection{Monotonicity and countable subadditivity}
+\textbf{Monotonicity.} If $A\subseteq B$ are measurable, then
+\[
+\mu(B)=\mu(A)+\mu(B\setminus A)\ge\mu(A).
+\]
+\textbf{Countable subadditivity.} For arbitrary measurable $A_n$, disjointness
+is not needed for
+\[
+\boxed{\mu\!\left(\bigcup_{n=1}^{\infty}A_n\right)
+\le\sum_{n=1}^{\infty}\mu(A_n).}
+\]
+\emph{Proof idea.} Disjointify via $B_1=A_1$ and
+$B_n=A_n\setminus\bigcup_{k<n}A_k$: then
+$\bigcup_nB_n=\bigcup_nA_n$ and $B_n\subseteq A_n$.
+
+\subsection{Finite and sigma-finite measures}
+A measure is \emph{finite} if $\mu(\Omega)<\infty$. It is
+\emph{sigma-finite} if $\Omega=\bigcup_{n\ge1}E_n$ for measurable $E_n$
+with $\mu(E_n)<\infty$. Every finite measure is sigma-finite, but the
+converse fails. Lebesgue length on $\R$ is sigma-finite, since
+\[
+\R=\bigcup_{n\ge1}[-n,n],\qquad \lambda([-n,n])=2n<\infty,
+\]
+although $\lambda(\R)=\infty$. Counting measure on an uncountable set
+is not sigma-finite.
+
+\key{A measure is countably \emph{additive} on disjoint sets and countably
+\emph{subadditive} on arbitrary measurable sets. These are distinct assertions.}
+
+\section{Continuity of Measures}
+\subsection{Continuity from below and from above}
+For increasing measurable sets $A_n\uparrow A$, meaning
+$A_n\subseteq A_{n+1}$ and $A=\bigcup_nA_n$, one has
+\[
+\boxed{\mu(A_n)\uparrow\mu(A),\qquad
+\mu\!\left(\bigcup_nA_n\right)=\lim_{n\to\infty}\mu(A_n).}
+\]
+\emph{Proof.} Put $B_1=A_1$, $B_n=A_n\setminus A_{n-1}$ ($n\ge2$).
+These are disjoint and $A_m=\bigsqcup_{n\le m}B_n$,
+$A=\bigsqcup_{n\ge1}B_n$; apply countable additivity.
+
+For decreasing sets $A_n\downarrow A$, meaning
+$A_n\supseteq A_{n+1}$ and $A=\bigcap_nA_n$, we have
+\[
+\boxed{\mu(A_1)<\infty\quad\Longrightarrow\quad
+\mu(A_n)\downarrow\mu(A).}
+\]
+\emph{Proof.} Set $B_n=A_1\setminus A_n\uparrow A_1\setminus A$.
+Continuity from below applies to $B_n$. Since $\mu(A_1)<\infty$,
+subtraction in $\mu(A_n)=\mu(A_1)-\mu(B_n)$ is legitimate, and taking
+limits gives $\mu(A)$.
+
+\emph{Why the finiteness condition matters.} For Lebesgue measure, let
+$A_n=[n,\infty)$. Then $A_n\downarrow\varnothing$ but
+\[
+\boxed{\mu(A_n)=\infty\text{ for every }n,\qquad
+\mu\!\left(\bigcap_nA_n\right)=0.}
+\]
+Every point eventually leaves these infinite-length tails; subtraction
+would require the undefined $\infty-\infty$.
+
+\subsection{Connection with set limsup and liminf}
+For arbitrary sets, recall the Module 1 definitions
+\[
+\limsup_n A_n=\bigcap_N\bigcup_{n\ge N}A_n,
+\qquad
+\liminf_n A_n=\bigcup_N\bigcap_{n\ge N}A_n.
+\]
+For monotone sequences, $\liminf A_n=\limsup A_n$ equals
+$\bigcup_nA_n$ (increasing) or $\bigcap_nA_n$ (decreasing).
+Measure continuity preserves these limits, with finiteness from above;
+it is an \emph{order-sequential}, not unrestricted, continuity.
+
+\emph{Counterexample without monotonicity.} For $A_n=[n,n+1]$,
+$\liminf A_n=\limsup A_n=\varnothing$, yet $\lambda(A_n)=1$ for all $n$.
+
+\key{Continuity means compatibility with limits. Countable additivity
+implies continuity from below; finite mass prevents a loss of mass
+``at infinity'' when sets decrease.}
+
+\section{Outer Measure}
+\subsection{Constructing Lebesgue outer measure}
+How can interval length be extended to general sets? Cover the target
+set by countably many open intervals and minimize the total covering
+length. For every $A\subseteq\R$, define
+\[
+\boxed{\lambda^*(A)=\inf\left\{\sum_{n=1}^{\infty}|I_n|:
+A\subseteq\bigcup_{n=1}^{\infty}I_n,\ 
+I_n\text{ open intervals}\right\}.}
+\]
+The infimum need not be attained; $\lambda^*$ is defined on
+\emph{all} subsets of $\R$. An \emph{outer measure}
+$\mu^*:\mathcal P(\Omega)\to[0,\infty]$ satisfies
+\[
+\boxed{\mu^*(\varnothing)=0,\quad
+A\subseteq B\Rightarrow\mu^*(A)\le\mu^*(B),\quad
+\mu^*\!\left(\bigcup_n A_n\right)\le\sum_n\mu^*(A_n).}
+\]
+For $\lambda^*$, monotonicity follows by reusing covers;
+subadditivity follows by combining near-optimal covers.
+
+\subsection{Basic examples}
+\textbf{Intervals.} For $a<b$, $\lambda^*([a,b])=b-a$. An interval
+$(a-\varepsilon,b+\varepsilon)$ gives the upper bound $b-a+2\varepsilon$.
+For the lower bound, compactness gives a finite subcover; a chain
+of overlapping intervals from $a$ to $b$ shows its lengths sum to at least
+$b-a$. The original covering sum is no smaller.
+
+\textbf{Countable sets.} If $A=\{x_1,x_2,\ldots\}$, cover $x_n$ by an
+open interval of length $\varepsilon/2^n$. The total length is
+$\varepsilon$, so $\lambda^*(A)=0$. In particular,
+\[
+\boxed{\lambda^*(\Q\cap[0,1])=0,\qquad
+\overline{\Q\cap[0,1]}=[0,1].}
+\]
+Thus topological density does not imply positive measure.
+
+\subsection{Why outer measure is not yet a measure}
+Outer measure guarantees only \emph{subadditivity}; even for disjoint
+$A,B$ it need not satisfy $\lambda^*(A\cup B)=\lambda^*(A)+\lambda^*(B)$.
+If it were a countably additive measure on all $\mathcal P(\R)$,
+its translation invariance and correct interval lengths would
+contradict the Vitali-set argument from Module 3. The remedy is to
+\emph{restrict the domain} to sets on which splitting is additive.
+
+\key{The covering construction assigns an outer size to every set, but
+the full power set is too large a domain for a translation-invariant,
+countably additive extension of interval length.}
+
+\section{Carath\'eodory's Criterion}
+\subsection{Measurability by additive splitting}
+Let $\mu^*$ be an outer measure on $\Omega$. A set $A\subseteq\Omega$
+is \emph{Carath\'eodory measurable} if for \emph{every} $E\subseteq\Omega$,
+\[
+\boxed{\mu^*(E)=\mu^*(E\cap A)+\mu^*(E\setminus A).}
+\]
+The inequality ``$\le$'' follows automatically from subadditivity;
+the criterion demands the reverse inequality as well. Thus a measurable $A$ splits any test set without increasing outer size;
+testing only $E=A$ would be vacuous.
+
+\textbf{Null sets are measurable.} If $\mu^*(A)=0$, then
+$\mu^*(E\cap A)=0$ and $\mu^*(E\setminus A)\le\mu^*(E)$.
+Together with subadditivity this proves the criterion. Every subset
+of an outer-null set is likewise measurable.
+
+\subsection{Carath\'eodory's theorem}
+\textbf{Theorem.} Let $\mu^*$ be any outer measure. Then
+\[
+\boxed{\begin{aligned}
+\mathcal M&=\{A\subseteq\Omega:A\text{ satisfies the splitting criterion}\}
+\\[-2pt]
+&\text{is a sigma-algebra, and}\qquad
+\mu=\mu^*|_{\mathcal M}\text{ is a measure.}
+\end{aligned}}
+\]
+\emph{Proof sketch.} The empty set is measurable, and complementation
+just exchanges the two pieces of a split. Repeated splitting establishes
+finite unions. For pairwise disjoint measurable $A_n$, repeated
+application of the criterion, followed by countable subadditivity,
+shows that $A=\bigcup_nA_n$ is measurable and
+\[
+\mu^*(A)=\sum_n\mu^*(A_n).
+\]
+Disjointification extends this to arbitrary countable unions.
+
+\key{Carath\'eodory's test converts a universally defined, merely
+subadditive outer measure into a genuinely countably additive measure
+on a sigma-algebra.}
+
+\section{Lebesgue Measure}
+\subsection{Definition and main properties}
+Apply Carath\'eodory's theorem to Lebesgue outer measure $\lambda^*$:
+\[
+\boxed{\begin{gathered}
+\Lcal=\{A\subseteq\R:A\text{ is Carath\'eodory measurable for }\lambda^*\},\\
+\lambda=\lambda^*|_{\Lcal},\qquad(\R,\Lcal,\lambda).
+\end{gathered}}
+\]
+This is \emph{Lebesgue measure}, with the following properties:
+\begin{itemize}
+\item \textbf{Length:} $\lambda([a,b])=b-a$; hence $\lambda(\R)=\infty$.
+\item \textbf{Translation invariance:} $A\in\Lcal\Rightarrow
+A+t\in\Lcal$ and $\lambda(A+t)=\lambda(A)$.
+\item \textbf{Countable additivity:} $\lambda(\bigsqcup_n A_n)=\sum_n\lambda(A_n)$.
+\item \textbf{Completeness:} every subset of a Lebesgue null set is Lebesgue measurable and null.
+\end{itemize}
+Measure-theoretic completeness is \emph{not} Cauchy completeness from
+metric-space theory.
+
+\subsection{Borel sets and Lebesgue measure}
+Every open subset of $\R$ is Lebesgue measurable (proved by splitting
+interval covers, first for intervals and then for open sets). Since
+$\Lcal$ is a sigma-algebra containing the usual open sets,
+\[
+\boxed{\B(\R)=\sigma(\mathcal T_{\mathrm{usual}})\subseteq\Lcal.}
+\]
+The Borel sigma-algebra is generated by topology; Lebesgue measurability
+is determined by additive splitting of outer measure.
+
+\subsection{Borel versus Lebesgue measurability}
+Both inclusions are strict:
+\[
+\boxed{\B(\R)\subsetneq\Lcal\subsetneq\mathcal P(\R).}
+\]
+\textbf{Cantor set (middle-thirds construction).} Start with $C_0=[0,1]$;
+at each step remove the open middle third of every remaining interval:
+\[
+C_1=[0,\tfrac13]\cup[\tfrac23,1],\qquad
+C=\bigcap_{n=0}^{\infty}C_n.
+\]
+Each $C_n$ is a union of $2^n$ closed intervals of length $3^{-n}$.
+Thus $C$ is closed (hence compact and Borel), and
+\[
+\boxed{0\le\lambda(C)\le\lambda(C_n)=(\tfrac23)^n\to0,
+\qquad\lambda(C)=0.}
+\]
+Yet $C$ is \emph{uncountable}: its elements are exactly the numbers with
+ternary expansions using only $0$ and $2$, so $|C|=2^{\aleph_0}$.
+This is an uncountable compact set of measure zero.
+
+\textbf{Why the inclusions are strict.} Every $S\subseteq C$ is Lebesgue
+measurable by completeness. But
+$|\mathcal P(C)|=2^{2^{\aleph_0}}>2^{\aleph_0}=|\B(\R)|$,
+so some such $S$ cannot be Borel. A Vitali set is not Lebesgue
+measurable, proving the second strict inclusion.
+
+\key{The construction is \emph{interval length} $\to$ \emph{outer measure}
+$\to$ \emph{Carath\'eodory measurability} $\to$ \emph{Lebesgue measure}.
+The restriction of the domain restores countable additivity.}
+
+\end{document}
